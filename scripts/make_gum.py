@@ -5,9 +5,9 @@ from sklearn.model_selection import train_test_split
 from parseridge.corpus.treebank import Treebank
 
 treebank = Treebank(
-    train_io=open("en_gum-ud-train.conllu"),
-    dev_io=open("en_gum-ud-dev.conllu"),
-    test_io=open("en_gum-ud-test.conllu")  # optional,
+    train_io=open("../UD_English-GUM/en_gum-ud-train.conllu"),
+    dev_io=open("../UD_English-GUM/en_gum-ud-dev.conllu"),
+    test_io=open("../UD_English-GUM/en_gum-ud-test.conllu")  # optional,
 )
 
 def tag_sentences(corpus):
@@ -24,20 +24,7 @@ for tagged_sentence in tagged_sentences:
     sentence, tags = zip(*tagged_sentence)
     sentences.append(np.array(sentence))
     sentence_tags.append(np.array(tags))
- 
-# Let's see how a sequence looks
- 
-print(sentences[5])
-print(sentence_tags[5])
- 
-# ['Lorillard' 'Inc.' ',' 'the' 'unit' 'of' 'New' 'York-based' 'Loews'
-#  'Corp.' 'that' '*T*-2' 'makes' 'Kent' 'cigarettes' ',' 'stopped' 'using'
-#  'crocidolite' 'in' 'its' 'Micronite' 'cigarette' 'filters' 'in' '1956'
-# '.']
-# ['NNP' 'NNP' ',' 'DT' 'NN' 'IN' 'JJ' 'JJ' 'NNP' 'NNP' 'WDT' '-NONE-' 'VBZ'
-#  'NNP' 'NNS' ',' 'VBD' 'VBG' 'NN' 'IN' 'PRP$' 'NN' 'NN' 'NNS' 'IN' 'CD'
-#  '.']
- 
+
  
 (train_sentences, 
  test_sentences, 
