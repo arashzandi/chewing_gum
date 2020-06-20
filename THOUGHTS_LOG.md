@@ -68,3 +68,15 @@ Adding some TODOs for tommorow and calling it a day:
     - [ ] Add CNAME
 - [ ] Save model or only save weights?
 
+[Sat 20 Jun 2020 17:44:31 CEST]
+Tested the tagging of one sentene.
+```
+How  :  SCONJ
+do  :  AUX
+people  :  NOUN
+look  :  VERB
+at  :  ADP
+and  :  CCONJ
+experience  :  VERB
+art  :  NOUN
+```

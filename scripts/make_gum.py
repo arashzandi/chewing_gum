@@ -1,12 +1,13 @@
 # Based on https://nlpforhackers.io/lstm-pos-tagger-keras/
 
+import pickle
 import numpy as np
-from sklearn.model_selection import train_test_split
 from parseridge.corpus.treebank import Treebank
 from keras.preprocessing.sequence import pad_sequences
 from keras.models import Sequential
 from keras.layers import Dense, LSTM, InputLayer, Bidirectional, TimeDistributed, Embedding, Activation
 from keras.optimizers import Adam
+from keras.models import load_model
 
 def tag_sentences(corpus):
     for sentence in corpus.sentences:
@@ -54,6 +55,12 @@ def get_tag2index(tags):
     tag2index['-PAD-'] = 0  # The special value used to padding
     return tag2index
 
+def get_index2tag(tags):
+    index2tag = {}
+    for i, tag in enumerate(tags):
+        index2tag[i+1] = tag
+    return index2tag
+
 def get_x(sentences, word2index):
     x = []
     for s in sentences:
@@ -97,7 +104,6 @@ def to_categorical(sequences, categories):
         cat_sequences.append(cats)
     return np.array(cat_sequences)
 
-
 treebank = load_data()
 train_sentences, train_tags = split(tag_sentences(treebank.train_corpus))
 validation_sentences, validation_tags = split(tag_sentences(treebank.dev_corpus))
@@ -107,7 +113,7 @@ words = get_words(train_sentences)
 tags = get_tags(train_tags)
 word2index = get_word2index(words)
 tag2index = get_tag2index(tags)
-
+index2tag = get_index2tag(tags)
 train_sentences_X = get_x(train_sentences, word2index)
 test_sentences_X = get_x(test_sentences, word2index)
 validation_sentences_X = get_x(validation_sentences, word2index)
@@ -134,13 +140,28 @@ cat_train_tags_y = to_categorical(train_tags_y, len(tag2index))
 cat_test_tags_y = to_categorical(test_tags_y, len(tag2index))
 cat_validation_tags_y = to_categorical(validation_tags_y, len(tag2index))
 
-model.fit(train_sentences_X,
-          cat_train_tags_y,
-          batch_size=128,
-          epochs=40,
-          validation_data=(validation_sentences_X, cat_validation_tags_y))
+try:
+    with open('data.pkl', 'rb') as f:
+        word2index, index2tag = pickle.load(f)
+    model = load_model('model.h5')
+except:
+    model.fit(train_sentences_X,
+            cat_train_tags_y,
+            batch_size=128,
+            epochs=20,
+            validation_data=(validation_sentences_X, cat_validation_tags_y))
+    scores = model.evaluate(test_sentences_X, cat_test_tags_y)
+    print(f"{model.metrics_names[1]}: {scores[1] * 100}")   # acc: 97.63
+    with open('data.pkl', 'wb') as f:
+        pickle.dump([word2index, index2tag], f)
+    model.save('model.h5')
 
-scores = model.evaluate(test_sentences_X, cat_test_tags_y)
-print(f"{model.metrics_names[1]}: {scores[1] * 100}")   # acc: 99.09751977804825
+sentence = 'How do people look at and experience art'
+sentence = ['*root*'] + sentence.split(' ')
+tokenized_sentence = [word2index[word.lower()] for word in sentence]
+tokenized_sentence = np.asarray([tokenized_sentence])
+padded_tokenized_sentence = pad(tokenized_sentence, MAX_LENGTH)
+prediction = model.predict(padded_tokenized_sentence)
+for i, pred in enumerate(prediction[0][:len(sentence)]):
+	print(sentence[i], ' : ', index2tag[np.argmax(pred)])
 
-model.save('model.h5')
