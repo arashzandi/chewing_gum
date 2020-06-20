@@ -18,3 +18,12 @@ unzip -d . glove.6B.zip glove.6B.100d.txt
 python train.py UD_English-GUM/en_gum-ud-train.conllu UD_English-GUM/en_gum-ud-dev.conllu
 ```
 
+## Evaluate
+```
+python evaluate.py UD_English-GUM/en_gum-ud-test.conllu
+```
+
+## Generate
+```
+python generate.py test_sentences.txt
+```
