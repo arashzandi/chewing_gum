@@ -8,6 +8,9 @@ from keras.models import Sequential
 from keras.layers import Dense, LSTM, InputLayer, Bidirectional, TimeDistributed, Embedding, Activation
 from keras.optimizers import Adam
 from keras.models import load_model
+import nltk
+
+nltk.download('punkt')
 
 def get_embedding_matrix(word2index):
     embeddings_index = {}
@@ -104,7 +107,6 @@ def get_model(word2index, tag2index, embedding_matrix):
                         weights=[embedding_matrix],
                         input_length=MAX_LENGTH,
                         trainable=True))
-    # model.add(Embedding(len(word2index), 128))
     model.add(Bidirectional(LSTM(256, return_sequences=True)))
     model.add(TimeDistributed(Dense(len(tag2index))))
     model.add(Activation('softmax'))
@@ -125,6 +127,9 @@ def to_categorical(sequences, categories):
         cat_sequences.append(cats)
     return np.array(cat_sequences)
 
+def pad(data, length):
+    return pad_sequences(data, maxlen=length, padding='post')
+
 treebank = load_data()
 train_sentences, train_tags = unzip(tag_sentences(treebank.train_corpus))
 validation_sentences, validation_tags = unzip(tag_sentences(treebank.dev_corpus))
@@ -135,6 +140,7 @@ tags = get_tags(train_tags)
 word2index = get_word2index(words)
 tag2index = get_tag2index(tags)
 index2tag = get_index2tag(tags)
+
 train_sentences_X = get_x(train_sentences, word2index)
 test_sentences_X = get_x(test_sentences, word2index)
 validation_sentences_X = get_x(validation_sentences, word2index)
@@ -143,10 +149,8 @@ test_tags_y = get_y(test_tags, tag2index)
 validation_tags_y = get_y(validation_tags, tag2index)
 
 MAX_LENGTH = len(max(train_sentences_X, key=len))
-print(MAX_LENGTH)  # 271
+print(MAX_LENGTH)
 
-def pad(data, length):
-    return pad_sequences(data, maxlen=length, padding='post')
 
 train_sentences_X = pad(train_sentences_X, MAX_LENGTH)
 test_sentences_X = pad(test_sentences_X, MAX_LENGTH)
@@ -178,8 +182,8 @@ except:
         pickle.dump([word2index, index2tag], f)
     model.save('model.h5')
 
-sentence = 'America likes Canada every night at 9'
-sentence = ['*root*'] + sentence.split(' ')
+sentence = 'Once performed by hand, POS tagging is now done in the context of computational linguistics, using algorithms which associate discrete terms, as well as hidden parts of speech, by a set of descriptive tags.'
+sentence = nltk.word_tokenize(sentence)
 tokenized_sentence = []
 for word in sentence:
     try:
