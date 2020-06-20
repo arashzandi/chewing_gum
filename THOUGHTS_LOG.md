@@ -80,3 +80,7 @@ and  :  CCONJ
 experience  :  VERB
 art  :  NOUN
 ```
+
+[Sat 20 Jun 2020 19:06:54 CEST] After adding embeddings from the Glove dataset
+the accuracy increased. I still think there should be other ways to increase
+the performance on unseen words.

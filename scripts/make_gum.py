@@ -32,7 +32,7 @@ def tag_sentences(corpus):
             result.append((token.form, token.upostag))
         yield result
  
-def split(tagged_sentences):
+def unzip(tagged_sentences):
     sentences, sentence_tags =[], [] 
     for tagged_sentence in tagged_sentences:
         sentence, tags = zip(*tagged_sentence)
@@ -126,9 +126,9 @@ def to_categorical(sequences, categories):
     return np.array(cat_sequences)
 
 treebank = load_data()
-train_sentences, train_tags = split(tag_sentences(treebank.train_corpus))
-validation_sentences, validation_tags = split(tag_sentences(treebank.dev_corpus))
-test_sentences, test_tags = split(tag_sentences(treebank.test_corpus))
+train_sentences, train_tags = unzip(tag_sentences(treebank.train_corpus))
+validation_sentences, validation_tags = unzip(tag_sentences(treebank.dev_corpus))
+test_sentences, test_tags = unzip(tag_sentences(treebank.test_corpus))
 
 words = get_words(train_sentences)
 tags = get_tags(train_tags)
