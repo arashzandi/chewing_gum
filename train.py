@@ -1,14 +1,14 @@
 
 import pickle
-import argparse
 
+import argparse
 from parseridge.corpus.treebank import Treebank
-from utils import unzip, tag_sentences, get_maps, get_xy, get_model
+
+from utils import unzip, get_maps, get_xy, get_model
+
 
 def load(train_file, dev_file):
-    return Treebank(
-        train_io=open(train_file),
-        dev_io=open(dev_file))
+    return Treebank(train_io=open(train_file), dev_io=open(dev_file))
 
 
 def train(train_file, dev_file):
@@ -29,12 +29,12 @@ def train(train_file, dev_file):
               validation_data=(val_x, val_y))
 
     with open('data.pkl', 'wb') as f:
-        pickle.dump([word2index, index2tag], f)
+        pickle.dump([word2index, index2tag, tag2index, maxlen], f)
     model.save('model.h5')
 
 
 if __name__ == '__main__':
-    parser = argparse.ArgumentParser(description='Process some integers.')
+    parser = argparse.ArgumentParser(description='Train a POS Tagger.')
     parser.add_argument('train_file',
                         type=str,
                         help='Path to the training `.conllu` file')
