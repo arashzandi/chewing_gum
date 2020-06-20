@@ -3,3 +3,4 @@ data.pkl
 model.h5
 glove.6B.*
 *.pyc
+*.pt
