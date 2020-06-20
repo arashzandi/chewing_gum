@@ -9,6 +9,22 @@ from keras.layers import Dense, LSTM, InputLayer, Bidirectional, TimeDistributed
 from keras.optimizers import Adam
 from keras.models import load_model
 
+def get_embedding_matrix(word2index):
+    embeddings_index = {}
+    with open('glove.6B.100d.txt', encoding="utf8") as glove_file:
+        for line in glove_file:
+            values = line.split()
+            word = values[0]
+            coefs = np.asarray(values[1:], dtype='float32')
+            embeddings_index[word] = coefs
+    embedding_matrix = np.random.random((len(word2index) + 1, 100))
+    for word, i in word2index.items():
+        embedding_vector = embeddings_index.get(word)
+        if embedding_vector is not None:
+            # words not found in embeddings_index will remain unchanged and thus will be random.
+            embedding_matrix[i] = embedding_vector
+    return embedding_matrix
+
 def tag_sentences(corpus):
     for sentence in corpus.sentences:
         result = []
@@ -80,10 +96,15 @@ def get_y(tags, tag2index):
         y.append([tag2index[t] for t in s])
     return y
 
-def get_model(word2index, tag2index):
+def get_model(word2index, tag2index, embedding_matrix):
     model = Sequential()
     model.add(InputLayer(input_shape=(MAX_LENGTH, )))
-    model.add(Embedding(len(word2index), 128))
+    model.add(Embedding(len(word2index) + 1,
+                        100,
+                        weights=[embedding_matrix],
+                        input_length=MAX_LENGTH,
+                        trainable=True))
+    # model.add(Embedding(len(word2index), 128))
     model.add(Bidirectional(LSTM(256, return_sequences=True)))
     model.add(TimeDistributed(Dense(len(tag2index))))
     model.add(Activation('softmax'))
@@ -134,7 +155,8 @@ train_tags_y = pad(train_tags_y, MAX_LENGTH)
 test_tags_y = pad(test_tags_y, MAX_LENGTH)
 validation_tags_y = pad(validation_tags_y, MAX_LENGTH)
 
-model = get_model(word2index, tag2index)
+embedding_matrix = get_embedding_matrix(word2index)
+model = get_model(word2index, tag2index, embedding_matrix)
 
 cat_train_tags_y = to_categorical(train_tags_y, len(tag2index))
 cat_test_tags_y = to_categorical(test_tags_y, len(tag2index))
@@ -148,7 +170,7 @@ except:
     model.fit(train_sentences_X,
             cat_train_tags_y,
             batch_size=128,
-            epochs=20,
+            epochs=10,
             validation_data=(validation_sentences_X, cat_validation_tags_y))
     scores = model.evaluate(test_sentences_X, cat_test_tags_y)
     print(f"{model.metrics_names[1]}: {scores[1] * 100}")   # acc: 97.63
@@ -156,9 +178,15 @@ except:
         pickle.dump([word2index, index2tag], f)
     model.save('model.h5')
 
-sentence = 'How do people look at and experience art'
+sentence = 'America likes Canada every night at 9'
 sentence = ['*root*'] + sentence.split(' ')
-tokenized_sentence = [word2index[word.lower()] for word in sentence]
+tokenized_sentence = []
+for word in sentence:
+    try:
+        tokenized_sentence.append(word2index[word.lower()])
+    except KeyError:
+        tokenized_sentence.append(word2index['-OOV-'])
+
 tokenized_sentence = np.asarray([tokenized_sentence])
 padded_tokenized_sentence = pad(tokenized_sentence, MAX_LENGTH)
 prediction = model.predict(padded_tokenized_sentence)
