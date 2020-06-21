@@ -2,7 +2,8 @@
 Part-Of-Speech LSTM Tagger trained on Georgetown University Multilayer corpus.
 
 
-See `THOUGHTS_LOG.md` for the transcription of the ideas and learnings.
+See [THOUGHTS_LOG.md](THOUGHTS_LOG.md) for the transcription of the ideas and
+learnings.
 
 ## Setup
 A virtual environment for installing the python packages is required. Below 
