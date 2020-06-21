@@ -94,7 +94,7 @@ class Tagger(object):
                  embeddings_length=100,
                  batch_size=128,
                  network_size=256,
-                 epochs=1, 
+                 epochs=30, 
                  init_from_file=False):
         self.model_path = 'model.h5'
         self.data_path = 'data.pkl'
