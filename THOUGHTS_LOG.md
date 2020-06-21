@@ -87,3 +87,21 @@ the performance on unseen words.
 
 [Sat 20 Jun 2020 21:46:04 CEST]
 Branching out to implement the same network in PyTorch
+
+[Sun 21 Jun 2020 09:12:13 CEST]
+The [implementation in PyTorch](https://github.com/arashzandi/chewing_gum/blob/feature/use_pytorch/scripts/torch_gum.py) has a lower performance compared to the
+implementation in Keras. Both networks are identical but is it possilbe that
+the metrics are calculated slightly different? Keras should be used rather for
+prototyping but a more carefull and unit-tested implementation in Pytorch is
+more favourable.
+
+[Sun 21 Jun 2020 09:14:33 CEST]
+Time to wrap up and wirte some tests and move some parts of code to classes.
+
+[Sun 21 Jun 2020 21:31:26 CEST]
+Unfortunately I have to make compromises because of lack of time. Tuning 
+the learning rate and the LSTM network size or the size of the Glove Embedding
+vectors can probably enhance the model performance slightly.
+
+[Sun 21 Jun 2020 21:34:50 CEST]
+Adding TODOs to the source code for where improvements can be acheived easily.
