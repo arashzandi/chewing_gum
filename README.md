@@ -20,7 +20,7 @@ python train.py UD_English-GUM/en_gum-ud-train.conllu UD_English-GUM/en_gum-ud-d
 
 ## Evaluate
 ```
-python evaluate.py UD_English-GUM/en_gum-ud-test.conllu
+python eval.py UD_English-GUM/en_gum-ud-test.conllu
 ```
 
 ## Generate

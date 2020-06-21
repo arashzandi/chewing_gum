@@ -87,3 +87,11 @@ the performance on unseen words.
 
 [Sat 20 Jun 2020 21:46:04 CEST]
 Branching out to implement the same network in PyTorch
+
+[Sun 21 Jun 2020 09:12:13 CEST]
+The implementation in Python has a lower performance compared to the
+implementation in Keras. Both networks are identical but it is possilbe that
+the metrics are calculated slightly different.
+
+[Sun 21 Jun 2020 09:14:33 CEST]
+Time to wrap up and wirte some tests and move some parts of code to classes.
