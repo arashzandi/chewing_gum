@@ -28,6 +28,7 @@ class DatasetInputOutput(object):
 
     @staticmethod
     def to_categorical(sequences, categories):
+        # TODO: do not pre-calculate, use `yield`
         cat_sequences = []
         for s in sequences:
             cats = []
@@ -38,18 +39,17 @@ class DatasetInputOutput(object):
         return np.array(cat_sequences)
 
     def prepare_x(self, input_map):
+        # TODO: Use pre-defined NumPy arrays instead of appending to list
         for s in self.input:
             s_int = []
             for w in s:
-                try:
-                    s_int.append(input_map[w.lower()])
-                except KeyError:
-                    s_int.append(input_map[self.unknown_key])
-        
+                    s_int.append(input_map.get(w.lower(), 
+                                 input_map[self.unknown_key]))
             self.x.append(s_int)
         self.x = self.pad(self.x, self.padding_length)
 
     def prepare_y(self, output_map):
+        # TODO: Use pre-defined NumPy arrays instead of appending to list
         for s in self.output:
             self.y.append([output_map[t] for t in s])
         self.y = self.pad(self.y, self.padding_length)
@@ -94,7 +94,8 @@ class Tagger(object):
                  embeddings_length=100,
                  batch_size=128,
                  network_size=256,
-                 epochs=30, 
+                 epochs=30,
+                 learning_rate=0.001,
                  init_from_file=False,
                  model_path='model.h5',
                  data_path='data.pkl'):
@@ -104,6 +105,7 @@ class Tagger(object):
         self.batch_size = batch_size
         self.network_size = network_size
         self.epochs = epochs
+        self.learning_rate = learning_rate
         self.dataset = None
         self._model = None
         self._maxlen = None
@@ -145,7 +147,7 @@ class Tagger(object):
         self._model.add(TimeDistributed(Dense(len(self.tag2index))))
         self._model.add(Activation('softmax'))
         self._model.compile(loss='categorical_crossentropy',
-                    optimizer=Adam(learning_rate=0.001),
+                    optimizer=Adam(learning_rate=self.learning_rate),
                     metrics=['accuracy'])
         return self._model
 
@@ -201,10 +203,8 @@ class Tagger(object):
                 sentence = nltk.word_tokenize(sentence)
                 tokenized = []
                 for word in sentence:
-                    try:
-                        tokenized.append(self.word2index[word.lower()])
-                    except KeyError:
-                        tokenized.append(self.word2index['-OOV-'])
+                    tokenized.append(self.word2index.get(word.lower(), 
+                                                         self.word2index['-OOV-']))
                 tokenized = np.asarray([tokenized])
                 padded = DatasetInputOutput.pad(tokenized, self._maxlen)
                 prediction = self.model.predict(padded)

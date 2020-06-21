@@ -10,6 +10,7 @@ def train(train_file, dev_file):
 
 
 if __name__ == '__main__':
+    # TODO: pass command line arguments for training, e.g. `--batch-size`
     parser = argparse.ArgumentParser(description='Train a POS Tagger.')
     parser.add_argument('train_file',
                         type=str,
