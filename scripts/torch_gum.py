@@ -188,11 +188,11 @@ train_iterator, valid_iterator, test_iterator = data.BucketIterator.splits(
 
 INPUT_DIM = len(TEXT.vocab)
 EMBEDDING_DIM = 100
-HIDDEN_DIM = 256
+HIDDEN_DIM = 128
 OUTPUT_DIM = len(UD_TAGS.vocab)
 N_LAYERS = 2
 BIDIRECTIONAL = True
-DROPOUT = 0.25
+DROPOUT = 0.5
 PAD_IDX = TEXT.vocab.stoi[TEXT.pad_token]
 model = BiLSTMPOSTagger(INPUT_DIM,
                         EMBEDDING_DIM,
@@ -215,7 +215,7 @@ model.embedding.weight.data[PAD_IDX] = torch.zeros(EMBEDDING_DIM)
 
 print(model.embedding.weight.data)
 
-N_EPOCHS = 30
+N_EPOCHS = 24
 
 optimizer = optim.Adam(model.parameters(), lr=0.001)
 scheduler = lr_scheduler.MultiStepLR(optimizer, milestones=[round(N_EPOCHS * x) for x in [0.7, 0.9]], gamma=0.1)
