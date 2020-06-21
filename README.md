@@ -79,7 +79,8 @@ python generate.py <test_sentences.txt>
 
 ## Time Spent
 I was only able to work on this project while either my son was at sleep or was
-outside with my partner. A total of 12:30 hours were spent.
+outside with my partner. A total of 12:30 hours were spent. Please see `git log`
+or [THOUGHTS_LOG.md](THOUGHTS_LOG.md) for a more detailed protocol.
 
 Friday 4pm - Email with code challenge was recieved.
 Friday 9 - 11:30pm - I read the literature and implemented a prototype.
