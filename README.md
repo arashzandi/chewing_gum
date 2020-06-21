@@ -1,9 +1,30 @@
-# chewing_gum
-Part-Of-Speech LSTM Tagger trained on Georgetown University Multilayer corpus.
+# Chewing Gum
+A Part-Of-Speech LSTM Tagger trained on Georgetown University Multilayer corpus.
 
+## Why LSTM
+Long Short Term Memory networks can remeber what happened before in a sequence 
+and this memory does not fade out over time. A bi-directional LSTM can also 
+make use of dependencies among words of a sentence from both sides (left and 
+right). A little reading on the latest papers also confirmed my intuition.
 
 See [THOUGHTS_LOG.md](THOUGHTS_LOG.md) for the transcription of the ideas and
 learnings.
+
+## Assumptions
+The biggest assumption made is that the POS-Tagging is a solved problem. This
+is can be largely wrong. Depending on the use-case other metrics than per-word
+accuracy should be employed.
+>With a per-word tagging accuracy of 97%, there is a probability of 45.6% that
+a 20-word sentence (the average sentence length in the Brown corpus) contains
+one or more tagging errors.
+>
+> -- [Is Part-of-Speech Tagging a Solved Task?](http://www.stefan-evert.de/PUB/GiesbrechtEvert2009_Tagging.pdf)
+
+Another assumption is that all tags are equally important. For example, 
+while punctutions or most frequent words can be easily tagged, tagging ambiguous
+words is a harder task but they do not decrease the model performance due to 
+their under-representation. Here again, based on the use-case, the metrics can
+be changed to consider the class imbalance or the weights of the classes.
 
 ## Setup
 A virtual environment for installing the python packages is required. Below 
@@ -49,3 +70,9 @@ is used. The POS-tagged words are printed out to stdout.
 ```
 python generate.py <test_sentences.txt>
 ```
+
+## Further Potential Improvements (List of Trade-Offs)
+ - Use a scheduler to tune hyper-parameters.
+ - Re-Implement in pure Tensorflow or PyTorch for more maintainablity.
+ - Add unit tests for the underlying functions and classes.
+ - Monitor the number/percentage of the `unknown` words in the test data.
