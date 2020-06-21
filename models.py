@@ -148,7 +148,7 @@ class Tagger(object):
         return self._model
 
     def save(self):
-        with open(self.dataset, 'wb') as f:
+        with open(self.data_path, 'wb') as f:
             data = [self.word2index,
                     self.index2tag,
                     self.tag2index,
@@ -197,15 +197,15 @@ class Tagger(object):
                 print('Text:')
                 print(sentence)
                 sentence = nltk.word_tokenize(sentence)
-                tokenized_sentence = []
+                tokenized = []
                 for word in sentence:
                     try:
-                        tokenized_sentence.append(self.word2index[word.lower()])
+                        tokenized.append(self.word2index[word.lower()])
                     except KeyError:
-                        tokenized_sentence.append(self.word2index['-OOV-'])
-                tokenized_sentence = np.asarray([tokenized_sentence])
-                padded_tokenized_sentence = DatasetInputOutput.pad(tokenized_sentence, self._maxlen)
-                prediction = self.model.predict(padded_tokenized_sentence)
+                        tokenized.append(self.word2index['-OOV-'])
+                tokenized = np.asarray([tokenized])
+                padded = DatasetInputOutput.pad(tokenized, self._maxlen)
+                prediction = self.model.predict(padded)
                 for i, pred in enumerate(prediction[0][:len(sentence)]):
                     print(sentence[i], ' : ', self.index2tag[np.argmax(pred)])
         print("****************************************")
