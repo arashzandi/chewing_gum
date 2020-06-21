@@ -76,3 +76,15 @@ python generate.py <test_sentences.txt>
  - Re-Implement in pure Tensorflow or PyTorch for more maintainablity.
  - Add unit tests for the underlying functions and classes.
  - Monitor the number/percentage of the `unknown` words in the test data.
+
+## Time Spent
+I was only able to work on this project while either my son was at sleep or was
+outside with my partner. A total of 12:30 hours were spent.
+
+Friday 4pm - Email with code challenge was recieved.
+Friday 9 - 11:30pm - I read the literature and implemented a prototype.
+Saturday 12 am to 2pm - I spent some time on Pytorch Implementation.
+Saturday 6pm to 10pm - I added `train`, `eval` and `generate` scripts.
+Sunday 11am to 1pm - I refacored source code
+Sunday 9pm to 11pm - I refinded the README and added comments.
+Sunday 11pm - Email was sent back
