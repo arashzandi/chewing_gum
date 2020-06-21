@@ -30,6 +30,7 @@ be changed to consider the class imbalance or the weights of the classes.
 A virtual environment for installing the python packages is required. Below 
 Python `virtualenv` is used as an example.
 ```
+git submodule update --init # to download the GUM dataset
 virtualenv venv
 source venv/bin/activate
 pip install -r requirements.txt
