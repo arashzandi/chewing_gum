@@ -1,4 +1,6 @@
+from keras import backend as K
 import numpy as np
+
 
 def unzip(corpus):
     return split(tag_sentences(corpus))
@@ -64,3 +66,14 @@ def get_embedding_matrix(word2index):
         if embedding_vector is not None:
             embedding_matrix[i] = embedding_vector
     return embedding_matrix
+ 
+def ignore_padding_accuracy(to_ignore=0):
+    def ignore_pad_accuracy(y_true, y_pred):
+        y_true_class = K.argmax(y_true, axis=-1)
+        y_pred_class = K.argmax(y_pred, axis=-1)
+ 
+        ignore_mask = K.cast(K.not_equal(y_pred_class, to_ignore), 'int32')
+        matches = K.cast(K.equal(y_true_class, y_pred_class), 'int32') * ignore_mask
+        accuracy = K.sum(matches) / K.maximum(K.sum(ignore_mask), 1)
+        return accuracy
+    return ignore_pad_accuracy

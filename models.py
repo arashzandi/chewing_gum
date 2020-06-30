@@ -11,7 +11,7 @@ from parseridge.corpus.treebank import Treebank
 
 from utils import unzip, get_unique_words, get_unique_tags
 from utils import get_word2index, get_tag2index, get_index2tag
-from utils import get_embedding_matrix
+from utils import get_embedding_matrix, ignore_padding_accuracy
 
 
 class DatasetInputOutput(object):
@@ -148,7 +148,7 @@ class Tagger(object):
         self._model.add(Activation('softmax'))
         self._model.compile(loss='categorical_crossentropy',
                     optimizer=Adam(learning_rate=self.learning_rate),
-                    metrics=['accuracy'])
+                    metrics=['accuracy', ignore_padding_accuracy()])
         return self._model
 
     def save(self):
